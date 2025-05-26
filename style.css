@@ -1,0 +1,431 @@
+/* Poppins Font Optimizasyonu */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Root CSS Değişkenleri - Gündüz Modu */
+:root {
+    --ana-arkaplan: #F3F3E0;
+    --birincil-renk: #27548A;
+    --ikincil-renk: #183B4E;
+    --vurgu-renk: #DDA853;
+    --ana-metin: #183B4E;
+    --ikincil-metin: #27548A;
+    --acik-metin: #666666;
+    --kart-arkaplan: #FFFFFF;
+    --alan-arkaplan: rgba(39, 84, 138, 0.05);
+    --kenarlık-renk: rgba(39, 84, 138, 0.15);
+    --hover-arkaplan: rgba(39, 84, 138, 0.1);
+    --shadow-renk: rgba(39, 84, 138, 0.2);
+}
+
+/* Root CSS Değişkenleri - Gece Modu */
+.dark {
+    --ana-arkaplan: #0E2148;
+    --birincil-renk: #483AA0;
+    --ikincil-renk: #7965C1;
+    --vurgu-renk: #E3D095;
+    --ana-metin: #E3D095;
+    --ikincil-metin: #7965C1;
+    --acik-metin: #B8B5E0;
+    --kart-arkaplan: #1A2E5C;
+    --alan-arkaplan: rgba(121, 101, 193, 0.1);
+    --kenarlık-renk: rgba(121, 101, 193, 0.2);
+    --hover-arkaplan: rgba(121, 101, 193, 0.15);
+    --shadow-renk: rgba(121, 101, 193, 0.3);
+}
+
+/* Ana Body Stilleri */
+body {
+    background-color: var(--ana-arkaplan) !important;
+    color: var(--ana-metin) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Giriş Sayfası Arkaplan */
+#girisKutusu {
+    background: linear-gradient(135deg, var(--ana-arkaplan), var(--birincil-renk)) !important;
+    min-height: 100vh !important;
+}
+
+/* Tüm Kart ve Panel Stilleri */
+.bg-white,
+[class*="bg-white"],
+.dark\\:bg-gray-800 {
+    background-color: var(--kart-arkaplan) !important;
+    color: var(--ana-metin) !important;
+    border: 1px solid var(--kenarlık-renk) !important;
+    box-shadow: 0 4px 6px var(--shadow-renk) !important;
+}
+
+/* Header Özel Stilleri */
+header.bg-white,
+header[class*="bg-white"] {
+    background-color: var(--kart-arkaplan) !important;
+    border-bottom: 2px solid var(--kenarlık-renk) !important;
+}
+
+/* Navigasyon Arkaplan */
+.bg-blue-600,
+nav.bg-blue-600 {
+    background: linear-gradient(135deg, var(--birincil-renk), var(--ikincil-renk)) !important;
+}
+
+/* Form Elemanları */
+input,
+select,
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"] {
+    background-color: var(--kart-arkaplan) !important;
+    color: var(--ana-metin) !important;
+    border: 2px solid var(--kenarlık-renk) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--vurgu-renk) !important;
+    box-shadow: 0 0 0 3px rgba(var(--vurgu-renk), 0.1) !important;
+    outline: none !important;
+}
+
+input:read-only,
+input[readonly] {
+    background-color: var(--alan-arkaplan) !important;
+    color: var(--acik-metin) !important;
+}
+
+/* Metin Renkleri */
+.text-gray-800,
+.dark\\:text-white,
+h1, h2, h3, h4, h5, h6 {
+    color: var(--ana-metin) !important;
+}
+
+.text-gray-600,
+.dark\\:text-gray-300,
+p {
+    color: var(--ikincil-metin) !important;
+}
+
+.text-gray-500,
+.text-gray-400 {
+    color: var(--acik-metin) !important;
+}
+
+/* Icon ve Vurgu Renkleri */
+.text-blue-600,
+.text-blue-400,
+.dark\\:text-blue-400 {
+    color: var(--birincil-renk) !important;
+}
+
+/* Buton Stilleri */
+button[class*="from-blue"],
+button[class*="bg-blue"] {
+    background: linear-gradient(135deg, var(--birincil-renk), var(--ikincil-renk)) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+}
+
+button[class*="from-green"] {
+    background: linear-gradient(135deg, var(--vurgu-renk), var(--birincil-renk)) !important;
+    color: #FFFFFF !important;
+}
+
+button[class*="from-orange"] {
+    background: linear-gradient(135deg, var(--ikincil-renk), var(--vurgu-renk)) !important;
+    color: #FFFFFF !important;
+}
+
+button[class*="from-red"] {
+    background: linear-gradient(135deg, #dc2626, #991b1b) !important;
+    color: #FFFFFF !important;
+}
+
+/* Arkaplan Renkleri */
+.bg-gray-50,
+.bg-gray-100,
+.dark\\:bg-gray-700 {
+    background-color: var(--alan-arkaplan) !important;
+    color: var(--ana-metin) !important;
+}
+
+.bg-blue-100,
+.dark\\:bg-blue-900 {
+    background-color: var(--alan-arkaplan) !important;
+    color: var(--birincil-renk) !important;
+}
+
+/* Hover Efektleri */
+.hover\\:bg-gray-50:hover,
+.dark\\:hover\\:bg-gray-700:hover,
+tr:hover {
+    background-color: var(--hover-arkaplan) !important;
+}
+
+button:hover {
+    filter: brightness(1.1) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Navigasyon Özel Stilleri */
+.navigasyon-dugmesi {
+    transition: all 0.3s ease !important;
+    border-bottom: 3px solid transparent !important;
+    position: relative !important;
+    color: #FFFFFF !important;
+}
+
+.navigasyon-dugmesi.active,
+.navigasyon-dugmesi.bg-blue-700 {
+    border-bottom-color: var(--vurgu-renk) !important;
+    background: var(--hover-arkaplan) !important;
+}
+
+.navigasyon-dugmesi:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Checkbox Stilleri */
+input[type="checkbox"]:checked {
+    background-color: var(--birincil-renk) !important;
+    border-color: var(--birincil-renk) !important;
+}
+
+/* Durum Badge Renkleri */
+.bg-yellow-100 {
+    background-color: rgba(221, 168, 83, 0.2) !important;
+    color: var(--vurgu-renk) !important;
+}
+
+.bg-green-100 {
+    background-color: rgba(34, 197, 94, 0.2) !important;
+    color: #16a34a !important;
+}
+
+.bg-red-100 {
+    background-color: rgba(239, 68, 68, 0.2) !important;
+    color: #dc2626 !important;
+}
+
+/* Tablo Stilleri */
+table {
+    background-color: var(--kart-arkaplan) !important;
+}
+
+thead {
+    background-color: var(--alan-arkaplan) !important;
+}
+
+th {
+    color: var(--acik-metin) !important;
+    text-transform: uppercase !important;
+}
+
+td {
+    color: var(--ana-metin) !important;
+}
+
+/* Modal Stilleri */
+#modalArkaplan {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+#modalIcerik {
+    background-color: var(--kart-arkaplan) !important;
+    color: var(--ana-metin) !important;
+    border: 1px solid var(--kenarlık-renk) !important;
+}
+
+/* Bildirim Stilleri */
+#bildirimKutusu .bg-white {
+    background-color: var(--kart-arkaplan) !important;
+    border-left: 4px solid var(--vurgu-renk) !important;
+}
+
+/* SVG Avatar Animasyonları */
+.profil-avatar-animasyon {
+    animation: profilSallanma 4s ease-in-out infinite;
+}
+
+.giris-avatar-animasyon {
+    animation: girisSallanma 3s ease-in-out infinite;
+}
+
+@keyframes profilSallanma {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(-2deg) scale(1.05); }
+    50% { transform: rotate(2deg) scale(1.1); }
+    75% { transform: rotate(-1deg) scale(1.05); }
+}
+
+@keyframes girisSallanma {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    25% { transform: translateY(-2px) rotate(-1deg); }
+    50% { transform: translateY(-4px) rotate(1deg); }
+    75% { transform: translateY(-2px) rotate(-0.5deg); }
+}
+
+.profil-yuz {
+    transform-origin: center;
+}
+
+.profil-govde {
+    transform-origin: center bottom;
+}
+
+/* Multi-select Dropdown Stilleri */
+select[multiple] {
+    background-image: none !important;
+    background-color: var(--kart-arkaplan) !important;
+    padding: 0.5rem !important;
+}
+
+select[multiple] option {
+    background-color: var(--kart-arkaplan) !important;
+    color: var(--ana-metin) !important;
+    padding: 0.5rem !important;
+    border-radius: 0.25rem !important;
+    margin: 0.1rem 0 !important;
+}
+
+select[multiple] option:checked {
+    background-color: var(--birincil-renk) !important;
+    color: #FFFFFF !important;
+}
+
+select[multiple] option:hover {
+    background-color: var(--hover-arkaplan) !important;
+}
+
+/* Animasyonlar */
+.modal-giris {
+    animation: modalGiris 0.3s ease-out;
+}
+
+.modal-cikis {
+    animation: modalCikis 0.3s ease-in;
+}
+
+@keyframes modalGiris {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes modalCikis {
+    from {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.9) translateY(-10px);
+    }
+}
+
+.bildirim-kayma {
+    animation: bildirimKayma 0.3s ease-out;
+}
+
+@keyframes bildirimKayma {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Scroll Bar Stilleri */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--alan-arkaplan);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--kenarlık-renk);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--vurgu-renk);
+}
+
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+    .navigasyon-dugmesi {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .grid {
+        gap: 1rem;
+    }
+
+    #modalIcerik {
+        margin: 1rem;
+        max-width: calc(100% - 2rem);
+    }
+}
+
+/* Focus Stilleri */
+:focus {
+    outline: 2px solid var(--vurgu-renk) !important;
+    outline-offset: 2px;
+}
+
+/* Geçiş Animasyonları */
+* {
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Tema Değişim Zorlaması */
+.tema-guncelleme {
+    transition: none !important;
+}
+
+.tema-guncelleme * {
+    transition: none !important;
+}
+
+/* Erişilebilirlik */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Yüksek Kontrast Desteği */
+@media (prefers-contrast: high) {
+    :root {
+        --ana-metin: #000000;
+        --kart-arkaplan: #FFFFFF;
+    }
+
+    .dark {
+        --ana-metin: #FFFFFF;
+        --kart-arkaplan: #000000;
+    }
+}
