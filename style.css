@@ -368,18 +368,170 @@ select[multiple] option:hover {
     background: var(--vurgu-renk);
 }
 
+/* Dropdown Stilleri */
+#adliyeDropdown {
+    transition: all 0.3s ease;
+}
+
+#adliyeDropdown:hover {
+    border-color: var(--vurgu-renk);
+}
+
+#adliyeOptions {
+    z-index: 1000;
+    border: 1px solid var(--kenarlık-renk);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.adliye-option {
+    transition: all 0.2s ease;
+    color: var(--ana-metin);
+}
+
+.adliye-option:hover {
+    background-color: var(--hover-arkaplan);
+    transform: translateX(4px);
+}
+
+#adliyeChevron {
+    transition: transform 0.3s ease;
+}
+
+#tercihListesi .bg-blue-50 {
+    background-color: var(--alan-arkaplan) !important;
+    border-color: var(--kenarlık-renk) !important;
+}
+
 /* Responsive Tasarım */
 @media (max-width: 768px) {
+    /* Container padding */
+    .max-w-7xl {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    /* Navigasyon */
+    nav .flex {
+        flex-direction: column;
+        gap: 0;
+    }
+    
     .navigasyon-dugmesi {
         padding: 0.75rem 1rem;
         font-size: 0.875rem;
+        text-align: center;
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-
-    .grid {
-        gap: 1rem;
+    
+    /* Form grid düzeni */
+    .grid.grid-cols-1.md\\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
     }
-
+    
+    /* Modal mobil */
     #modalIcerik {
+        margin: 1rem;
+        max-width: calc(100% - 2rem);
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+    }
+    
+    /* Dropdown mobil */
+    #adliyeOptions {
+        position: fixed;
+        top: 20%;
+        left: 5%;
+        right: 5%;
+        width: 90%;
+        max-height: 60vh;
+        z-index: 9999;
+        border-radius: 12px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    /* Tercih listesi mobil */
+    #tercihListesi > div {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+    
+    #tercihListesi button {
+        align-self: center;
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    /* Tablo mobil */
+    .overflow-x-auto {
+        -webkit-overflow-scrolling: touch;
+        border-radius: 8px;
+    }
+    
+    table {
+        font-size: 0.75rem;
+        min-width: 600px;
+    }
+    
+    td, th {
+        padding: 0.5rem;
+        white-space: nowrap;
+    }
+    
+    /* Header mobil */
+    header .flex {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    header .flex > div:last-child {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    /* Profil kart mobil */
+    .lg\\:col-span-2 {
+        order: 2;
+    }
+    
+    .lg\\:col-span-2 + div {
+        order: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .navigasyon-dugmesi {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+        min-width: auto;
+        flex: 1;
+    }
+    
+    .navigasyon-dugmesi i {
+        display: block;
+        margin-bottom: 0.25rem;
+        margin-right: 0;
+    }
+    
+    /* Küçük ekranlarda metinleri gizle */
+    .navigasyon-dugmesi span {
+        font-size: 0.7rem;
+        line-height: 1;
+    }
+    
+    /* Profil kartı mobil düzeni */
+    .lg\\:col-span-2 .grid.grid-cols-1.md\\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem;
+    }
+    
+    /* Giriş formu mobil */
+    #girisKutusu .max-w-md {
         margin: 1rem;
         max-width: calc(100% - 2rem);
     }
@@ -393,19 +545,38 @@ select[multiple] option:hover {
 
 /* Geçiş Animasyonları */
 * {
-    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
-                color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
-                border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: background-color 0.3s ease, 
+                color 0.3s ease, 
+                border-color 0.3s ease,
+                box-shadow 0.3s ease !important;
 }
 
-/* Tema Değişim Zorlaması */
-.tema-guncelleme {
-    transition: none !important;
+/* Otomatik tema sistemi - kullanıcının sistem tercihine göre */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ana-arkaplan: #0E2148;
+        --birincil-renk: #483AA0;
+        --ikincil-renk: #7965C1;
+        --vurgu-renk: #E3D095;
+        --ana-metin: #E3D095;
+        --ikincil-metin: #7965C1;
+        --acik-metin: #B8B5E0;
+        --kart-arkaplan: #1A2E5C;
+        --alan-arkaplan: rgba(121, 101, 193, 0.1);
+        --kenarlık-renk: rgba(121, 101, 193, 0.2);
+        --hover-arkaplan: rgba(121, 101, 193, 0.15);
+        --shadow-renk: rgba(121, 101, 193, 0.3);
+    }
 }
 
-.tema-guncelleme * {
-    transition: none !important;
+/* Tema değişimi için yumuşak geçişler */
+html, body {
+    transition: background-color 0.3s ease, color 0.3s ease !important;
+}
+
+.bg-white, .dark\\:bg-gray-800,
+[class*="bg-white"], [class*="bg-gray"] {
+    transition: background-color 0.3s ease, border-color 0.3s ease !important;
 }
 
 /* Erişilebilirlik */
