@@ -32,3 +32,15 @@ Projede kullanıcı verileri ve tayin talepleri **`localStorage`** aracılığı
 ```txt
 Sicil Numarası: 123456
 Şifre: 1234
+
+
+Update - 27/05/2025
+JavaScript'teki tema ile ilgili tüm kodlar kaldırıldı ve console hataları düzeltildi.
+Sistem otomatik olarak kullanıcının işletim sistemi/tarayıcı tema tercihini algılayacak ve buna göre gündüz veya gece modunu uyguluyor.
+
+Modern Dropdown Sistemi:
+
+Eski multiple select yerine özelleştirilmiş dropdown
+En fazla 4 tercih seçme limiti
+Seçilen adliyeler 1. Tercih, 2. Tercih şeklinde sıralı gösterim
+Seçilen adliyeleri tek tıkla çıkarma özelliği
