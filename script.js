@@ -1,4 +1,3 @@
-
 // Örnek kullanıcı verileri
 const kullanicilar = {
     '12345': {
@@ -12,8 +11,7 @@ const kullanicilar = {
     }
 };
 
-// Tema değişkeni
-let karanlikMod = false;
+// Tema değişkeni kaldırıldı - CSS ile yönetiliyor
 
 // Örnek verileri localStorage'a yükle
 function ornekVerileriYukle() {
@@ -51,30 +49,26 @@ function ornekVerileriYukle() {
 // Uygulama başlatma
 document.addEventListener('DOMContentLoaded', function() {
     ornekVerileriYukle();
-    
-    // Güncel tarihi ayarla ve minimum tarih belirle
-    const bugun = new Date().toISOString().split('T')[0];
-    document.getElementById('talepTarihi').value = bugun;
-    document.getElementById('talepTarihi').setAttribute('min', bugun);
-    
+
+    // Güncel tarihi ayarla ve minimum tarih belirle - element kontrolü ekle
+    const talepTarihiElement = document.getElementById('talepTarihi');
+    if (talepTarihiElement) {
+        const bugun = new Date().toISOString().split('T')[0];
+        talepTarihiElement.value = bugun;
+        talepTarihiElement.setAttribute('min', bugun);
+    }
+
     // Talep geçmişini yükle
     talepGecmisiniYukle();
-    
-    // Kaydedilmiş temayı kontrol et
-    const kaydedilmisTema = localStorage.getItem('karanlikMod');
-    if (kaydedilmisTema === 'true') {
-        karanlikMod = true;
-        temayiUygula();
-    }
 });
 
 // Giriş işlevi
 document.getElementById('girisFormu').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     const sicilNo = document.getElementById('sicilNumarasi').value;
     const sifre = document.getElementById('sifre').value;
-    
+
     if (kullanicilar[sicilNo] && kullanicilar[sicilNo].sifre === sifre) {
         // Kullanıcı verilerini localStorage'dan kontrol et veya varsayılan kullan
         let kullaniciVerisi = localStorage.getItem('kullaniciVerisi');
@@ -84,27 +78,169 @@ document.getElementById('girisFormu').addEventListener('submit', function(e) {
         } else {
             kullaniciVerisi = JSON.parse(kullaniciVerisi);
         }
-        
+
         localStorage.setItem('aktifKullanici', JSON.stringify(kullaniciVerisi));
         anaSayfayiGoster();
         document.getElementById('girisKutusu').classList.add('hidden');
         document.getElementById('anaPaneli').classList.remove('hidden');
-        
+
         // Profil bilgilerini güncelle
         profilBilgileriniGuncelle();
-        
+
         bildirimGoster('Giriş başarılı!', 'Sisteme başarıyla giriş yaptınız.', 'basari');
     } else {
         modalGoster('Giriş Hatası', 'Hatalı sicil numarası veya şifre!', 'hata');
     }
 });
 
+// Adliye isimleri
+const adliyeIsimleri = {
+    'ankara': 'Ankara Adliyesi',
+    'istanbul': 'İstanbul Adliyesi',
+    'izmir': 'İzmir Adliyesi',
+    'bursa': 'Bursa Adliyesi',
+    'canakkale': 'Çanakkale Adliyesi',
+    'antalya': 'Antalya Adliyesi',
+    'adana': 'Adana Adliyesi',
+    'kocaeli': 'Kocaeli Adliyesi'
+};
+
+// Maksimum tercih sayısı
+const maksimumTercih = 4;
+
+// Seçilen adliyeler dizisi
+let secilenAdliyeler = [];
+
+// Adliye dropdown fonksiyonları
+function adliyeDropdownInit() {
+    const options = document.querySelectorAll('.adliye-option');
+    options.forEach(option => {
+        option.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+            adliyeEkle(value);
+        });
+    });
+
+    // Dropdown dışına tıklanınca kapat
+    document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('adliyeDropdown');
+        const options = document.getElementById('adliyeOptions');
+        
+        if (!dropdown.contains(e.target) && !options.contains(e.target)) {
+            adliyeDropdownKapat();
+        }
+    });
+}
+
+function adliyeDropdownToggle() {
+    const dropdown = document.getElementById('adliyeOptions');
+    const chevron = document.getElementById('adliyeChevron');
+
+    if (dropdown.classList.contains('hidden')) {
+        dropdown.classList.remove('hidden');
+        chevron.style.transform = 'rotate(180deg)';
+    } else {
+        adliyeDropdownKapat();
+    }
+}
+
+function adliyeDropdownKapat() {
+    const dropdown = document.getElementById('adliyeOptions');
+    const chevron = document.getElementById('adliyeChevron');
+    dropdown.classList.add('hidden');
+    chevron.style.transform = 'rotate(0deg)';
+}
+
+function adliyeEkle(value) {
+    if (secilenAdliyeler.includes(value)) {
+        return; // Zaten seçili
+    }
+
+    if (secilenAdliyeler.length >= maksimumTercih) {
+        bildirimGoster('Maksimum Tercih', `En fazla ${maksimumTercih} adliye seçebilirsiniz.`, 'uyari');
+        return;
+    }
+
+    secilenAdliyeler.push(value);
+    adliyeListesiniGuncelle();
+    adliyeDropdownKapat();
+}
+
+function adliyeCikar(value) {
+    const index = secilenAdliyeler.indexOf(value);
+    if (index > -1) {
+        secilenAdliyeler.splice(index, 1);
+    }
+    adliyeListesiniGuncelle();
+}
+
+function adliyeListesiniGuncelle() {
+    const placeholder = document.getElementById('adliyePlaceholder');
+    const container = document.getElementById('secilenAdliyeler');
+    const liste = document.getElementById('tercihListesi');
+    const hiddenInput = document.getElementById('adliyeSecimi');
+
+    // Hidden input'u güncelle
+    hiddenInput.value = secilenAdliyeler.join(',');
+
+    if (secilenAdliyeler.length === 0) {
+        placeholder.textContent = 'Adliye seçiniz (En fazla 4 tercih)';
+        placeholder.className = 'text-gray-500 dark:text-gray-400';
+        container.classList.add('hidden');
+        return;
+    }
+
+    placeholder.textContent = `${secilenAdliyeler.length} adliye seçildi`;
+    placeholder.className = 'text-blue-600 dark:text-blue-400 font-medium';
+    container.classList.remove('hidden');
+
+    // Tercih listesini oluştur
+    liste.innerHTML = '';
+    secilenAdliyeler.forEach((adliye, index) => {
+        const tercihDiv = document.createElement('div');
+        tercihDiv.className = 'flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700';
+
+        tercihDiv.innerHTML = `
+            <div class="flex items-center">
+                <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full mr-3">${index + 1}. Tercih</span>
+                <i class="fas fa-building mr-2 text-blue-600 dark:text-blue-400"></i>
+                <span class="text-gray-800 dark:text-white font-medium">${adliyeIsimleri[adliye]}</span>
+            </div>
+            <button type="button" onclick="adliyeCikar('${adliye}')" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        liste.appendChild(tercihDiv);
+    });
+
+    // Seçeneklerin durumunu güncelle
+    updateAdliyeOptions();
+}
+
+function updateAdliyeOptions() {
+    const options = document.querySelectorAll('.adliye-option');
+    options.forEach(option => {
+        const value = option.getAttribute('data-value');
+        if (secilenAdliyeler.includes(value)) {
+            option.classList.add('opacity-50', 'cursor-not-allowed');
+            option.style.pointerEvents = 'none';
+        } else {
+            option.classList.remove('opacity-50', 'cursor-not-allowed');
+            option.style.pointerEvents = 'auto';
+        }
+    });
+}
+
 // Profil bilgilerini güncelle
 function profilBilgileriniGuncelle() {
     const aktifKullanici = JSON.parse(localStorage.getItem('aktifKullanici'));
     if (aktifKullanici) {
-        document.getElementById('hosgeldinMetni').textContent = `Hoş geldiniz, ${aktifKullanici.isim}`;
-        
+        const hosgeldinElement = document.getElementById('hosgeldinMetni');
+        if (hosgeldinElement) {
+            hosgeldinElement.textContent = `Hoş geldiniz, ${aktifKullanici.isim}`;
+        }
+
         // Ana sayfadaki profil kartını güncelle
         const profilKarti = document.querySelector('.lg\\:col-span-2 .bg-white');
         if (profilKarti) {
@@ -118,7 +254,7 @@ function profilBilgileriniGuncelle() {
                         <p class="text-blue-600 dark:text-blue-400 font-medium">${aktifKullanici.unvan}</p>
                     </div>
                 </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                         <h3 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -161,6 +297,12 @@ function talebFormunuGoster() {
     tumBolumleriGizle();
     document.getElementById('talebFormu').classList.remove('hidden');
     aktifNavigasyonuGuncelle(1);
+
+    // Adliye dropdown'ı başlat
+    secilenAdliyeler = [];
+    adliyeListesiniGuncelle();
+    updateAdliyeOptions();
+    adliyeDropdownInit();
 }
 
 function talepGecmisiniGoster() {
@@ -211,14 +353,14 @@ function profilFormunuDoldur() {
 // Profil formu gönderme
 document.getElementById('profilFormu').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     // Form doğrulaması
     if (!formDogrula('profilFormu')) {
         return;
     }
-    
+
     const aktifKullanici = JSON.parse(localStorage.getItem('aktifKullanici'));
-    
+
     const guncellenmisKullanici = {
         ...aktifKullanici,
         isim: document.getElementById('duzenleIsim').value,
@@ -227,10 +369,10 @@ document.getElementById('profilFormu').addEventListener('submit', function(e) {
         baslamaTarihi: document.getElementById('duzenleBaslamaTarihi').value,
         eposta: document.getElementById('duzenleEposta').value
     };
-    
+
     localStorage.setItem('aktifKullanici', JSON.stringify(guncellenmisKullanici));
     localStorage.setItem('kullaniciVerisi', JSON.stringify(guncellenmisKullanici));
-    
+
     profilBilgileriniGuncelle();
     bildirimGoster('Profil Güncellendi!', 'Profil bilgileriniz başarıyla güncellendi.', 'basari');
     anaSayfayiGoster();
@@ -241,10 +383,10 @@ function formDogrula(formId) {
     const form = document.getElementById(formId);
     const gereklıAlanlar = form.querySelectorAll('[required]');
     const bosAlanlar = [];
-    
+
     gereklıAlanlar.forEach(alan => {
         const alanAdi = alan.previousElementSibling?.textContent || alan.name || alan.id;
-        
+
         if (alan.type === 'checkbox') {
             const checkboxGrubu = form.querySelectorAll(`input[name="${alan.name}"]`);
             const seciliSayi = Array.from(checkboxGrubu).filter(cb => cb.checked).length;
@@ -265,7 +407,7 @@ function formDogrula(formId) {
             }
         }
     });
-    
+
     if (bosAlanlar.length > 0) {
         const mesaj = `Aşağıdaki alanlar zorunludur:<br><br><ul class="list-disc list-inside">
             ${bosAlanlar.map(alan => `<li>${alan}</li>`).join('')}
@@ -273,7 +415,7 @@ function formDogrula(formId) {
         modalGoster('Eksik Bilgiler', mesaj, 'uyari');
         return false;
     }
-    
+
     return true;
 }
 
@@ -281,12 +423,12 @@ function formDogrula(formId) {
 function tarihKontrolEt(inputId) {
     const input = document.getElementById(inputId);
     const tarih = input.value;
-    
+
     if (tarih) {
         const giriliTarih = new Date(tarih);
         const bugun = new Date();
         bugun.setHours(0, 0, 0, 0);
-        
+
         if (giriliTarih < bugun) {
             modalGoster('Geçersiz Tarih', 'Geçmiş bir tarih seçilemez!', 'uyari');
             input.value = new Date().toISOString().split('T')[0];
@@ -299,22 +441,22 @@ function tarihKontrolEt(inputId) {
 // Tayin formu işlevi
 document.getElementById('tayinFormu').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     // Form doğrulaması
     if (!formDogrula('tayinFormu')) {
         return;
     }
-    
+
     const talepTuru = document.getElementById('talepTuru').value;
     const talepTarihi = document.getElementById('talepTarihi').value;
     const secilenAdliyeler = Array.from(document.getElementById('adliyeSecimi').selectedOptions).map(option => option.value);
     const aciklama = document.getElementById('aciklama').value;
-    
+
     // Tarih kontrolü
     if (!tarihKontrolEt('talepTarihi')) {
         return;
     }
-    
+
     const talepler = JSON.parse(localStorage.getItem('tayinTalepleri') || '[]');
     const yeniTalep = {
         id: Date.now(),
@@ -324,18 +466,18 @@ document.getElementById('tayinFormu').addEventListener('submit', function(e) {
         durum: 'beklemede',
         aciklama: aciklama
     };
-    
+
     talepler.push(yeniTalep);
     localStorage.setItem('tayinTalepleri', JSON.stringify(talepler));
-    
+
     bildirimGoster('Talep Gönderildi!', 'Tayin talebiniz başarıyla gönderildi.', 'basari');
-    
+
     document.getElementById('tayinFormu').reset();
     document.getElementById('talepTarihi').value = new Date().toISOString().split('T')[0];
     // Adliye seçimlerini temizle
     const adliyeSelect = document.getElementById('adliyeSecimi');
     Array.from(adliyeSelect.options).forEach(option => option.selected = false);
-    
+
     talepGecmisiniGoster();
 });
 
@@ -343,9 +485,9 @@ document.getElementById('tayinFormu').addEventListener('submit', function(e) {
 function talepGecmisiniYukle() {
     const talepler = JSON.parse(localStorage.getItem('tayinTalepleri') || '[]');
     const tabloGovdesi = document.getElementById('talepTabloGovdesi');
-    
+
     tabloGovdesi.innerHTML = '';
-    
+
     talepler.reverse().forEach(talep => {
         const satir = talepSatiriOlustur(talep);
         tabloGovdesi.appendChild(satir);
@@ -355,14 +497,14 @@ function talepGecmisiniYukle() {
 function talepSatiriOlustur(talep) {
     const satir = document.createElement('tr');
     satir.className = 'hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors';
-    
+
     const turIsimleri = {
         'zorunlu': 'Zorunlu Tayin',
         'istekli': 'İsteğe Bağlı Tayin',
         'saglik': 'Sağlık Mazeret Tayin',
         'egitim': 'Eğitim Tayin'
     };
-    
+
     const adliyeIsimleri = {
         'ankara': 'Ankara',
         'istanbul': 'İstanbul',
@@ -370,19 +512,19 @@ function talepSatiriOlustur(talep) {
         'bursa': 'Bursa',
         'canakkale': 'Çanakkale'
     };
-    
+
     const durumRenkleri = {
         'beklemede': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
         'onaylandi': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
         'reddedildi': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
     };
-    
+
     const durumIsimleri = {
         'beklemede': 'Beklemede',
         'onaylandi': 'Onaylandı',
         'reddedildi': 'Reddedildi'
     };
-    
+
     satir.innerHTML = `
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
             <i class="fas fa-calendar mr-2 text-gray-400"></i>
@@ -428,7 +570,7 @@ function talepSatiriOlustur(talep) {
             </button>
         </td>
     `;
-    
+
     return satir;
 }
 
@@ -436,7 +578,7 @@ function talepSatiriOlustur(talep) {
 function talebiGoruntule(id) {
     const talepler = JSON.parse(localStorage.getItem('tayinTalepleri') || '[]');
     const talep = talepler.find(t => t.id === id);
-    
+
     if (talep) {
         const turIsimleri = {
             'zorunlu': 'Zorunlu Tayin',
@@ -444,7 +586,7 @@ function talebiGoruntule(id) {
             'saglik': 'Sağlık Mazeret Tayin',
             'egitim': 'Eğitim Tayin'
         };
-        
+
         const adliyeIsimleri = {
             'ankara': 'Ankara',
             'istanbul': 'İstanbul',
@@ -452,9 +594,9 @@ function talebiGoruntule(id) {
             'bursa': 'Bursa',
             'canakkale': 'Çanakkale'
         };
-        
+
         const adliyelerMetni = talep.adliyeler.map(adliye => adliyeIsimleri[adliye]).join(', ');
-        
+
         const detayMetni = `
             <div class="space-y-3 text-left">
                 <div><strong>Tarih:</strong> ${new Date(talep.tarih).toLocaleDateString('tr-TR')}</div>
@@ -464,7 +606,7 @@ function talebiGoruntule(id) {
                 <div><strong>Açıklama:</strong> ${talep.aciklama || 'Belirtilmemiş'}</div>
             </div>
         `;
-        
+
         modalGoster('Talep Detayları', detayMetni, 'bilgi');
     }
 }
@@ -473,22 +615,22 @@ function talebiGoruntule(id) {
 function talebiDuzenle(id) {
     const talepler = JSON.parse(localStorage.getItem('tayinTalepleri') || '[]');
     const talep = talepler.find(t => t.id === id);
-    
+
     if (talep && talep.durum === 'beklemede') {
         // Formu doldur
         document.getElementById('talepTuru').value = talep.tur;
         document.getElementById('talepTarihi').value = talep.tarih;
         document.getElementById('aciklama').value = talep.aciklama;
-        
+
         // Adliyeleri seç
         const adliyeSelect = document.getElementById('adliyeSecimi');
         Array.from(adliyeSelect.options).forEach(option => {
             option.selected = talep.adliyeler.includes(option.value);
         });
-        
+
         // Eski talebi sil
         talebiSil(id, true);
-        
+
         // Forma git
         talebFormunuGoster();
         bildirimGoster('Düzenleme Modu', 'Talep düzenleme için forma yönlendirildiniz.', 'bilgi');
@@ -506,7 +648,7 @@ function talebiOnayla(id) {
         () => {
             let talepler = JSON.parse(localStorage.getItem('tayinTalepleri') || '[]');
             const talepIndeksi = talepler.findIndex(t => t.id === id);
-            
+
             if (talepIndeksi !== -1) {
                 talepler[talepIndeksi].durum = 'onaylandi';
                 talepler[talepIndeksi].onayTarihi = new Date().toISOString().split('T')[0];
@@ -550,74 +692,19 @@ function cikisYap() {
             localStorage.removeItem('aktifKullanici');
             document.getElementById('girisKutusu').classList.remove('hidden');
             document.getElementById('anaPaneli').classList.add('hidden');
-            
+
             document.getElementById('girisFormu').reset();
             document.getElementById('tayinFormu').reset();
-            
+
             document.getElementById('sicilNumarasi').value = '12345';
             document.getElementById('sifre').value = '123456';
-            
+
             bildirimGoster('Çıkış Yapıldı', 'Başarıyla çıkış yaptınız.', 'bilgi');
         }
     );
 }
 
-// Mod değiştir (Gündüz/Gece)
-function modDegistir() {
-    karanlikMod = !karanlikMod;
-    temayiUygula();
-    localStorage.setItem('karanlikMod', karanlikMod.toString());
-    
-    const modAdi = karanlikMod ? 'Gece Modu' : 'Gündüz Modu';
-    bildirimGoster('Tema Değiştirildi', `${modAdi} aktif edildi.`, 'bilgi');
-}
-
-// Temayı uygula - Güçlendirilmiş versiyon
-function temayiUygula() {
-    const htmlElement = document.documentElement;
-    const bodyElement = document.body;
-    const modIkonu = document.getElementById('modIkonu');
-    
-    // Geçiş animasyonlarını geçici olarak durdur
-    bodyElement.classList.add('tema-guncelleme');
-    
-    // Tema sınıflarını uygula
-    if (karanlikMod) {
-        htmlElement.classList.add('dark');
-        bodyElement.classList.add('dark');
-        if (modIkonu) modIkonu.className = 'fas fa-sun';
-    } else {
-        htmlElement.classList.remove('dark');
-        bodyElement.classList.remove('dark');
-        if (modIkonu) modIkonu.className = 'fas fa-moon';
-    }
-    
-    // DOM'u zorla güncelle
-    bodyElement.offsetHeight; // reflow tetikle
-    
-    // Tüm elementleri yeniden boyayı zorla
-    const tumElementler = document.querySelectorAll('*');
-    tumElementler.forEach(element => {
-        element.style.transition = 'none';
-        element.offsetHeight; // reflow tetikle
-        element.style.transition = '';
-    });
-    
-    // Geçiş animasyonlarını yeniden aktifleştir
-    setTimeout(() => {
-        bodyElement.classList.remove('tema-guncelleme');
-        
-        // CSS değişkenlerini zorla yenile
-        const style = getComputedStyle(document.documentElement);
-        document.documentElement.style.setProperty('--force-update', Date.now().toString());
-        
-        // Sayfa yeniden boyama zorlaması
-        document.body.style.transform = 'translateZ(0)';
-        setTimeout(() => {
-            document.body.style.transform = '';
-        }, 10);
-    }, 50);
-}
+// Tema değiştirme artık CSS ile yapılıyor - JavaScript kodu kaldırıldı
 
 // Modal göster
 function modalGoster(baslik, metin, tur = 'bilgi', onayCallback = null) {
@@ -626,24 +713,24 @@ function modalGoster(baslik, metin, tur = 'bilgi', onayCallback = null) {
     const modalBaslik = document.getElementById('modalBaslik');
     const modalMetin = document.getElementById('modalMetin');
     const onayDugmesi = document.getElementById('modalOnayDugmesi');
-    
+
     modalBaslik.textContent = baslik;
     modalMetin.innerHTML = metin;
-    
+
     const renkSiniflari = {
         'hata': 'text-red-600 dark:text-red-400',
         'uyari': 'text-yellow-600 dark:text-yellow-400',
         'basari': 'text-green-600 dark:text-green-400',
         'bilgi': 'text-blue-600 dark:text-blue-400'
     };
-    
+
     modalBaslik.className = `text-lg font-semibold ${renkSiniflari[tur] || 'text-gray-800 dark:text-white'}`;
-    
+
     onayDugmesi.onclick = () => {
         if (onayCallback) onayCallback();
         modaliKapat();
     };
-    
+
     modalArkaplan.classList.remove('hidden');
     setTimeout(() => {
         modalIcerik.classList.remove('scale-95', 'opacity-0');
@@ -655,10 +742,10 @@ function modalGoster(baslik, metin, tur = 'bilgi', onayCallback = null) {
 function modaliKapat() {
     const modalArkaplan = document.getElementById('modalArkaplan');
     const modalIcerik = document.getElementById('modalIcerik');
-    
+
     modalIcerik.classList.remove('scale-100', 'opacity-100');
     modalIcerik.classList.add('scale-95', 'opacity-0');
-    
+
     setTimeout(() => {
         modalArkaplan.classList.add('hidden');
     }, 300);
@@ -669,25 +756,25 @@ function bildirimGoster(baslik, metin, tur = 'bilgi') {
     const bildirimKutusu = document.getElementById('bildirimKutusu');
     const bildirimIkonu = document.getElementById('bildirimIkonu');
     const bildirimMetni = document.getElementById('bildirimMetni');
-    
+
     const ikonSiniflari = {
         'hata': 'fas fa-times-circle text-red-400',
         'uyari': 'fas fa-exclamation-triangle text-yellow-400',
         'basari': 'fas fa-check-circle text-green-400',
         'bilgi': 'fas fa-info-circle text-blue-400'
     };
-    
+
     bildirimIkonu.className = ikonSiniflari[tur] || 'fas fa-info-circle text-blue-400';
     bildirimMetni.innerHTML = `<strong>${baslik}</strong><br>${metin}`;
-    
+
     bildirimKutusu.classList.remove('hidden');
     const bildirimIcerigi = bildirimKutusu.firstElementChild;
-    
+
     setTimeout(() => {
         bildirimIcerigi.classList.remove('translate-x-full');
         bildirimIcerigi.classList.add('translate-x-0');
     }, 10);
-    
+
     setTimeout(() => {
         bildirimiKapat();
     }, 5000);
@@ -697,10 +784,10 @@ function bildirimGoster(baslik, metin, tur = 'bilgi') {
 function bildirimiKapat() {
     const bildirimKutusu = document.getElementById('bildirimKutusu');
     const bildirimIcerigi = bildirimKutusu.firstElementChild;
-    
+
     bildirimIcerigi.classList.remove('translate-x-0');
     bildirimIcerigi.classList.add('translate-x-full');
-    
+
     setTimeout(() => {
         bildirimKutusu.classList.add('hidden');
     }, 300);
@@ -732,3 +819,5 @@ document.addEventListener('keydown', function(e) {
         bildirimiKapat();
     }
 });
+
+// JavaScript kod dosyası güncellendi.
